@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Tabster.Data</id>
+    <version>1.0</version>
+    <title>Tabster.Data</title>
+    <authors>Nate Shoffner</authors>
+    <owners>Nate Shoffner</owners>
+    <licenseUrl>https://github.com/GetTabster/Tabster.Data/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/GetTabster/Tabster.Data</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description> Tabster file functionality and types. </description>
+    <releaseNotes>* Initial deployment.</releaseNotes>
+    <copyright>Copyright Nate Shoffner 2016</copyright>
+    <tags>tabster</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\Tabster.Data.dll" target="lib\net35\Tabster.Data.dll" />
+    <file src="bin\Release\Tabster.Data.XML" target="lib\net35\Tabster.Data.XML" />
+  </files>
+</package>
