@@ -59,16 +59,35 @@ namespace Tabster.Data.Utilities
 
         #endregion
 
-        #region String Compression
-
         /// <summary>
         ///     Writes a length-prefixed Gzipped string.
         /// </summary>
         public static void WriteCompressedString(this BinaryWriter writer, string str, Encoding encoding)
         {
-            var zipped = ZipText(str, encoding);
-            Write7BitEncodedInt(writer, zipped.Length);
-            writer.Write(zipped);
+            byte[] zippedBytes;
+
+            using (var ms = new MemoryStream())
+            {
+                using (var zipOut = new GZipOutputStream(ms))
+                {
+                    using (var sw = new StreamWriter(zipOut, encoding))
+                    {
+                        sw.Write(str);
+
+                        sw.Flush();
+                        zipOut.Finish();
+
+                        var bytes = new byte[ms.Length];
+                        ms.Seek(0, SeekOrigin.Begin);
+                        ms.Read(bytes, 0, bytes.Length);
+
+                        zippedBytes = bytes;
+                    }
+                }
+            }
+
+            Write7BitEncodedInt(writer, zippedBytes.Length);
+            writer.Write(zippedBytes);
         }
 
         /// <summary>
@@ -77,60 +96,20 @@ namespace Tabster.Data.Utilities
         public static string ReadCompressedString(this BinaryReader reader, Encoding encoding)
         {
             var length = Read7BitEncodedInt(reader);
-            var zipped = reader.ReadBytes(length);
-            return Unzip(zipped, encoding);
-        }
 
-        private static byte[] ZipText(string text, Encoding encoding)
-        {
-            if (text == null)
-                return null;
+            if (length == 0)
+                return string.Empty;
 
-            var textBytes = encoding.GetBytes(text);
-
-            using (var ms = new MemoryStream())
-            {
-                using (var zipOut = new GZipOutputStream(ms))
-                {
-                    using (var writer = new StreamWriter(zipOut))
-                    {
-                        writer.Write(textBytes);
-
-                        writer.Flush();
-                        zipOut.Finish();
-
-                        var bytes = new byte[ms.Length];
-                        ms.Seek(0, SeekOrigin.Begin);
-                        ms.Read(bytes, 0, bytes.Length);
-
-                        return ms.ToArray();
-                    }
-                }
-            }
-        }
-
-        private static string Unzip(byte[] bytes, Encoding encoding)
-        {
-            if (bytes == null)
-                return null;
-
-            using (var ms = new MemoryStream(bytes))
+            using (Stream ms = new MemoryStream(reader.ReadBytes(length)))
             {
                 using (var zipInput = new GZipInputStream(ms))
                 {
-                    var buffer = new byte[zipInput.Length];
-
-                    int read;
-                    while ((read = zipInput.Read(buffer, 0, buffer.Length)) > 0)
+                    using (var sr = new StreamReader(zipInput, encoding))
                     {
-                        ms.Write(buffer, 0, read);
+                        return sr.ReadToEnd();
                     }
-
-                    return encoding.GetString(ms.ToArray());
                 }
             }
-
-            #endregion
         }
     }
 }
