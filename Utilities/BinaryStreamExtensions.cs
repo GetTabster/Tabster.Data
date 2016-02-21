@@ -2,8 +2,8 @@
 
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
+using ICSharpCode.SharpZipLib.GZip;
 
 #endregion
 
@@ -81,52 +81,56 @@ namespace Tabster.Data.Utilities
             return Unzip(zipped, encoding);
         }
 
-        private static void CopyTo(Stream src, Stream dest)
-        {
-            var bytes = new byte[4096];
-
-            int cnt;
-
-            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
-            {
-                dest.Write(bytes, 0, cnt);
-            }
-        }
-
         private static byte[] ZipText(string text, Encoding encoding)
         {
-            var bytes = encoding.GetBytes(text);
+            if (text == null)
+                return null;
 
-            using (var msi = new MemoryStream(bytes))
+            var textBytes = encoding.GetBytes(text);
+
+            using (var ms = new MemoryStream())
             {
-                using (var mso = new MemoryStream())
+                using (var zipOut = new GZipOutputStream(ms))
                 {
-                    using (var gs = new GZipStream(mso, System.IO.Compression.CompressionMode.Compress))
+                    using (var writer = new StreamWriter(zipOut))
                     {
-                        CopyTo(msi, gs);
-                    }
+                        writer.Write(textBytes);
 
-                    return mso.ToArray();
+                        writer.Flush();
+                        zipOut.Finish();
+
+                        var bytes = new byte[ms.Length];
+                        ms.Seek(0, SeekOrigin.Begin);
+                        ms.Read(bytes, 0, bytes.Length);
+
+                        return ms.ToArray();
+                    }
                 }
             }
         }
 
         private static string Unzip(byte[] bytes, Encoding encoding)
         {
-            using (var msi = new MemoryStream(bytes))
+            if (bytes == null)
+                return null;
+
+            using (var ms = new MemoryStream(bytes))
             {
-                using (var mso = new MemoryStream())
+                using (var zipInput = new GZipInputStream(ms))
                 {
-                    using (var gs = new GZipStream(msi, System.IO.Compression.CompressionMode.Decompress))
+                    var buffer = new byte[zipInput.Length];
+
+                    int read;
+                    while ((read = zipInput.Read(buffer, 0, buffer.Length)) > 0)
                     {
-                        CopyTo(gs, mso);
+                        ms.Write(buffer, 0, read);
                     }
 
-                    return encoding.GetString(mso.ToArray());
+                    return encoding.GetString(ms.ToArray());
                 }
             }
-        }
 
-        #endregion
+            #endregion
+        }
     }
 }
