@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Tabster.Data</id>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <title>Tabster.Data</title>
     <authors>Nate Shoffner</authors>
     <owners>Nate Shoffner</owners>
@@ -10,7 +10,11 @@
     <projectUrl>https://github.com/GetTabster/Tabster.Data</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description> Tabster file functionality and types. </description>
-    <releaseNotes>* Initial deployment.</releaseNotes>
+    <releaseNotes>v1.0.1 - 2/21/2016
+	* SharpZipLib used for compression
+	* Fixed Tabster.Core NuGet reference
+	v1.0 - 2/18/2016:
+	* Initial deployment.</releaseNotes>
     <copyright>Copyright Nate Shoffner 2016</copyright>
     <tags>tabster</tags>
   </metadata>
