@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Tabster.Data</id>
-    <version>1.0.3</version>
+    <version>$version$</version>
     <title>Tabster.Data</title>
     <authors>Nate Shoffner</authors>
     <owners>Nate Shoffner</owners>
