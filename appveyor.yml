@@ -12,3 +12,9 @@ before_build:
 - ps: nuget restore
 build:
   project: Tabster.Data.sln
+deploy:
+  provider: NuGet
+  api_key:
+    secure: QzhmxS67d/XC1o4iPuKUv4+m4DxLtf5xXivDgokPK3kkMRP586YrbNDWZIPF09+R
+  skip_symbols: false
+  artifact: /.*\.nupkg/
