@@ -54,9 +54,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tabster.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Tabster.Core, Version=1.0.0.25, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\Tabster.Core.1.0\lib\net35\Tabster.Core.dll</HintPath>
+      <HintPath>packages\Tabster.Core.1.0.0.25\lib\net35\Tabster.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
