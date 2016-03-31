@@ -1,4 +1,4 @@
-version: 1.0.3.{build}
+version: 1.0.0.{build}
 os: Visual Studio 2015
 configuration: Release
 platform: Any CPU
@@ -12,12 +12,16 @@ before_build:
 - ps: nuget restore
 build:
   project: Tabster.Data.sln
-after_test:
+after_build:
 - ps: >-
     .\nuget_pack.ps1
+- ps: >-
+    .\Deploy\archive.ps1
 artifacts:
 - path: '*.nupkg'
   name: nuget_package
+- path: 'Tabster.Data.zip'
+  name: archive
 deploy:
   - provider: NuGet
     api_key:
@@ -29,7 +33,7 @@ deploy:
   - provider: GitHub
     auth_token:
       secure: SD+1NPa8QJ8nAT9A4wsEog2pedpT8KaQebkDVB9mHbVze6nYABjcVzDa/5MXK0ZW
-    artifact: Tabster.Data.dll
+    artifact: archive
     draft: false
     on:
       branch: master
