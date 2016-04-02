@@ -32,6 +32,8 @@ namespace Tabster.Data.Binary
 
             var compression = (CompressionMode) reader.ReadByte();
 
+            reader.ReadBytes(8);
+
             return new TabsterFileHeader(version, compression);
         }
 
@@ -47,6 +49,7 @@ namespace Tabster.Data.Binary
             writer.Write(headerStr.ToCharArray());
             writer.Write(header.Version.ToString());
             writer.Write((byte) header.Compression);
+            writer.Write(new byte[8]);
         }
 
         protected TabsterFileAttributes ReadFileAttributes(BinaryReader reader)
